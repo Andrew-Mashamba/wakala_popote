@@ -57,6 +57,7 @@ class AgentControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         agentUser = User.builder()
+                .id(UUID.randomUUID())
                 .uid("agent-uid-" + UUID.randomUUID())
                 .email("agent@example.com")
                 .displayName("Agent User")
@@ -76,6 +77,7 @@ class AgentControllerIntegrationTest {
         agentToken = jwtService.createToken(agentUser.getId(), agentUser.getUid());
 
         User clientUser = User.builder()
+                .id(UUID.randomUUID())
                 .uid("client-uid-" + UUID.randomUUID())
                 .email("client@example.com")
                 .displayName("Client")

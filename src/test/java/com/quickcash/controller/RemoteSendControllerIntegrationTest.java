@@ -47,6 +47,7 @@ class RemoteSendControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(UUID.randomUUID())
                 .uid("test-uid-" + UUID.randomUUID())
                 .email("send@example.com")
                 .displayName("Sender")

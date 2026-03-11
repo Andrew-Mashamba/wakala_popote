@@ -53,6 +53,7 @@ class DepositControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(UUID.randomUUID())
                 .uid("test-uid-" + UUID.randomUUID())
                 .email("deposit@example.com")
                 .displayName("Deposit User")

@@ -2,6 +2,7 @@ package com.quickcash.auth;
 
 import com.quickcash.auth.dto.AuthRequest;
 import com.quickcash.auth.dto.AuthResponse;
+import com.quickcash.auth.dto.PhonePinLoginRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthRequest request) {
-        return ResponseEntity.ok(authService.registerOrLogin(request));
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid PhonePinLoginRequest request) {
+        return ResponseEntity.ok(authService.loginWithPhonePin(request.getPhoneNumber(), request.getPin()));
     }
 
     /**

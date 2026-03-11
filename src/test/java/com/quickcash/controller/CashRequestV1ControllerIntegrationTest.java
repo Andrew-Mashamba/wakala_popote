@@ -59,6 +59,7 @@ class CashRequestV1ControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(UUID.randomUUID())
                 .uid("test-uid-" + UUID.randomUUID())
                 .email("test@example.com")
                 .displayName("Test User")

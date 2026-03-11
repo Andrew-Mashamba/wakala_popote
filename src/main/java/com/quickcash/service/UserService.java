@@ -55,6 +55,7 @@ public class UserService {
                     return existing;
                 })
                 .orElseGet(() -> User.builder()
+                        .id(UUID.randomUUID())
                         .uid(req.getUid())
                         .displayName(req.getDisplayName())
                         .email(req.getEmail())
@@ -93,6 +94,21 @@ public class UserService {
         UUID id = UUID.fromString(userId);
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", id));
+    }
+
+    /**
+     * Get user by id, or create one with id and uid=userId.toString() if not found (first-time registration from JWT).
+     */
+    @Transactional
+    public User getOrCreateById(UUID userId) {
+        return userRepository.findById(userId)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .id(userId)
+                            .uid(userId.toString())
+                            .build();
+                    return userRepository.save(newUser);
+                });
     }
 
     public User getByUid(String uid) {

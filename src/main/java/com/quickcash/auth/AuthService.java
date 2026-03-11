@@ -6,7 +6,10 @@ import com.quickcash.domain.User;
 import com.quickcash.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -17,6 +20,7 @@ public class AuthService {
     private final FirebaseTokenVerifier firebaseTokenVerifier;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Value("${app.jwt.expiration-ms:86400000}")
     private long expirationMs;
@@ -30,6 +34,26 @@ public class AuthService {
                 .map(existing -> updateExistingUser(existing, request))
                 .orElseGet(() -> createNewUser(uid, request));
         user = userRepository.save(user);
+        String token = jwtService.createToken(user.getId(), user.getUid());
+        return AuthResponse.builder()
+                .userId(user.getId().toString())
+                .accessToken(token)
+                .expiresInMs(expirationMs)
+                .build();
+    }
+
+    /**
+     * Login with phone number and 4-digit PIN. Returns JWT or 401.
+     */
+    public AuthResponse loginWithPhonePin(String phoneNumber, String pin) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone or PIN"));
+        if (user.getPinHash() == null || user.getPinHash().isBlank()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone or PIN");
+        }
+        if (!passwordEncoder.matches(pin, user.getPinHash())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid phone or PIN");
+        }
         String token = jwtService.createToken(user.getId(), user.getUid());
         return AuthResponse.builder()
                 .userId(user.getId().toString())
@@ -60,6 +84,7 @@ public class AuthService {
 
     private User createNewUser(String uid, AuthRequest request) {
         return User.builder()
+                .id(UUID.randomUUID())
                 .uid(uid)
                 .displayName(request.getDisplayName())
                 .email(request.getEmail())

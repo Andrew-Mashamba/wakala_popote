@@ -14,6 +14,7 @@ public class UserProfileResponse {
     private String email;
     private String phoneNumber;
     private String photoUrl;
+    private String nidaNumber;
     private Double latitude;
     private Double longitude;
     private String address;

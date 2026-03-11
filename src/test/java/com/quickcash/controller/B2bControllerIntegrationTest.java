@@ -48,6 +48,7 @@ class B2bControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         User user = User.builder()
+                .id(UUID.randomUUID())
                 .uid("b2b-" + UUID.randomUUID())
                 .email("b2b@example.com")
                 .displayName("Business")

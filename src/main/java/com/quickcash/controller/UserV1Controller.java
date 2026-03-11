@@ -9,6 +9,7 @@ import com.quickcash.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -19,21 +20,26 @@ import java.util.UUID;
 public class UserV1Controller {
 
     private final UserService userService;
+    private final PasswordEncoder passwordEncoder;
 
     @GetMapping("/me")
     public ResponseEntity<UserProfileResponse> getMe(@CurrentUser UUID userId) {
-        User user = userService.getById(userId.toString());
+        User user = userService.getOrCreateById(userId);
         return ResponseEntity.ok(toProfileResponse(user));
     }
 
     @PutMapping("/me")
     public ResponseEntity<UserProfileResponse> updateMe(@CurrentUser UUID userId,
                                                         @RequestBody @Valid UpdateProfileRequest request) {
-        User user = userService.getById(userId.toString());
+        User user = userService.getOrCreateById(userId);
         if (request.getDisplayName() != null) user.setDisplayName(request.getDisplayName());
         if (request.getEmail() != null) user.setEmail(request.getEmail());
         if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
         if (request.getPhotoUrl() != null) user.setPhotoUrl(request.getPhotoUrl());
+        if (request.getNidaNumber() != null) user.setNidaNumber(request.getNidaNumber());
+        if (request.getPin() != null && !request.getPin().isBlank()) {
+            user.setPinHash(passwordEncoder.encode(request.getPin()));
+        }
         user = userService.save(user);
         return ResponseEntity.ok(toProfileResponse(user));
     }
@@ -68,6 +74,7 @@ public class UserV1Controller {
                 .email(u.getEmail())
                 .phoneNumber(u.getPhoneNumber())
                 .photoUrl(u.getPhotoUrl())
+                .nidaNumber(u.getNidaNumber())
                 .latitude(u.getLatitude())
                 .longitude(u.getLongitude())
                 .address(u.getAddress())

@@ -19,7 +19,7 @@ import java.util.UUID;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @Column(columnDefinition = "uuid")
     private UUID id;
 
     @Column(name = "uid", nullable = false, unique = true)
@@ -28,6 +28,12 @@ public class User {
     private String phoneNumber;
     private String displayName;
     private String email;
+
+    @Column(name = "nida_number", length = 20)
+    private String nidaNumber;
+
+    @Column(name = "pin_hash", length = 255)
+    private String pinHash;
 
     @Column(name = "email_verified")
     private Boolean emailVerified;

@@ -43,6 +43,7 @@ class BoltSettlementControllerTest {
     @BeforeEach
     void setUp() {
         user = User.builder()
+                .id(UUID.randomUUID())
                 .uid("uid-" + UUID.randomUUID())
                 .email("test@example.com")
                 .displayName("Test")
