@@ -34,21 +34,5 @@ CREATE INDEX IF NOT EXISTS idx_bolt_settlement_job ON bolt_settlements(bolt_job_
 CREATE INDEX IF NOT EXISTS idx_bolt_settlement_request ON bolt_settlements(request_id);
 CREATE INDEX IF NOT EXISTS idx_bolt_settlement_status ON bolt_settlements(payout_status);
 
--- Indexes from PROJECT.md §6.4 (column names as in current schema)
-CREATE INDEX IF NOT EXISTS idx_users_firebase_uid ON users(uid);
-CREATE INDEX IF NOT EXISTS idx_users_location ON users(current_lat, current_lng);
-CREATE INDEX IF NOT EXISTS idx_agents_available ON agents(is_available, current_lat, current_lng);
-CREATE INDEX IF NOT EXISTS idx_agents_selcom ON agents(selcom_account_id);
-CREATE INDEX IF NOT EXISTS idx_requests_status ON cash_requests(status);
-CREATE INDEX IF NOT EXISTS idx_requests_location ON cash_requests(delivery_lat, delivery_lng);
-CREATE INDEX IF NOT EXISTS idx_settlements_status ON settlements(client_debit_status, bolt_settlement_status);
-CREATE INDEX IF NOT EXISTS idx_deposits_status ON deposit_requests(status);
-CREATE INDEX IF NOT EXISTS idx_deposits_client ON deposit_requests(client_user_id);
-CREATE INDEX IF NOT EXISTS idx_deposits_agent ON deposit_requests(assigned_agent_id);
-CREATE INDEX IF NOT EXISTS idx_deposits_location ON deposit_requests(collection_lat, collection_lng);
-CREATE INDEX IF NOT EXISTS idx_deposits_bank ON deposit_requests(destination_bank_code);
-CREATE INDEX IF NOT EXISTS idx_applications_status ON selcom_account_applications(status);
-CREATE INDEX IF NOT EXISTS idx_applications_nida ON selcom_account_applications(nida_number);
-CREATE INDEX IF NOT EXISTS idx_applications_phone ON selcom_account_applications(phone_number);
-CREATE INDEX IF NOT EXISTS idx_applications_referrer ON selcom_account_applications(referred_by_agent_id);
-CREATE INDEX IF NOT EXISTS idx_onboarding_application ON agent_onboarding_progress(application_id);
+-- Indexes on users, agents, cash_requests, etc. are created by JPA @Table annotations
+-- when ddl-auto=update. Skipped here since Flyway runs before JPA schema creation.

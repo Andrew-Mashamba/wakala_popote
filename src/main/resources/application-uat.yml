@@ -1,0 +1,4 @@
+# UAT profile - wakala_popote on zima-uat.site:8098
+app:
+  jwt:
+    secret: wakala-popote-uat-dev-secret-32bytes!!
