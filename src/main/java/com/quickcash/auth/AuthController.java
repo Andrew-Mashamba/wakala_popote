@@ -3,6 +3,7 @@ package com.quickcash.auth;
 import com.quickcash.auth.dto.AuthRequest;
 import com.quickcash.auth.dto.AuthResponse;
 import com.quickcash.auth.dto.PhonePinLoginRequest;
+import com.quickcash.auth.dto.PhonePinRegisterRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthRequest request) {
         return ResponseEntity.ok(authService.registerOrLogin(request));
+    }
+
+    @PostMapping("/register-pin")
+    public ResponseEntity<AuthResponse> registerWithPin(@RequestBody @Valid PhonePinRegisterRequest request) {
+        return ResponseEntity.ok(authService.registerWithPhonePin(request));
     }
 
     @PostMapping("/login")

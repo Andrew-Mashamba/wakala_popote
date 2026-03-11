@@ -36,7 +36,7 @@ public class SecurityConfig {
                         .requestMatchers("/", "/health", "/h2-console/**", "/actuator/**").permitAll()
                         .requestMatchers("/users/createUser", "/users/updateUserLocation", "/users/updateToken").permitAll()
                         .requestMatchers("/cash/requestCash").permitAll()
-                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/login", "/api/v1/auth/refresh").permitAll()
+                        .requestMatchers("/api/v1/auth/register", "/api/v1/auth/register-pin", "/api/v1/auth/login", "/api/v1/auth/refresh").permitAll()
                         .requestMatchers("/api/v1/selcom/callback").permitAll()
                         .requestMatchers("/api/v1/bolt/webhook").permitAll()
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")

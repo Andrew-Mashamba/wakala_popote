@@ -43,6 +43,31 @@ public class AuthService {
     }
 
     /**
+     * Register with phone, name, NIDA, PIN. Creates user and returns JWT. Returns 409 if phone already registered.
+     */
+    public AuthResponse registerWithPhonePin(com.quickcash.auth.dto.PhonePinRegisterRequest request) {
+        if (userRepository.findByPhoneNumber(request.getPhoneNumber()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Phone number already registered");
+        }
+        User user = User.builder()
+                .id(UUID.randomUUID())
+                .uid(UUID.randomUUID().toString())
+                .phoneNumber(request.getPhoneNumber())
+                .displayName(request.getDisplayName())
+                .nidaNumber(request.getNidaNumber())
+                .photoUrl(request.getPhotoUrl())
+                .pinHash(passwordEncoder.encode(request.getPin()))
+                .build();
+        user = userRepository.save(user);
+        String token = jwtService.createToken(user.getId(), user.getUid());
+        return AuthResponse.builder()
+                .userId(user.getId().toString())
+                .accessToken(token)
+                .expiresInMs(expirationMs)
+                .build();
+    }
+
+    /**
      * Login with phone number and 4-digit PIN. Returns JWT or 401.
      */
     public AuthResponse loginWithPhonePin(String phoneNumber, String pin) {
