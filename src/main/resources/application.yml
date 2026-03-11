@@ -1,0 +1,103 @@
+spring:
+  application:
+    name: quickcash-backend
+
+  datasource:
+    url: jdbc:h2:mem:quickcash;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+    open-in-view: false
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# Quick Cash app config (align with existing visaagentbackend.xyz:8080)
+app:
+  # CORS allowed origins (Flutter app, web)
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    allowed-headers: "*"
+    max-age: 3600
+
+  # Firebase (verify ID token; if disabled, auth accepts uid in body for dev)
+  firebase:
+    enabled: ${FIREBASE_ENABLED:false}
+    # Path to service account JSON, or leave empty to skip Firebase init
+    credentials-path: ${FIREBASE_CREDENTIALS:}
+
+  # JWT for API auth after login/register
+  jwt:
+    secret: ${JWT_SECRET:QuickCashDevSecretKeyForSigningTokensMinimum32Chars}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+  # Fee calculation (Phase 1 - configurable)
+  fees:
+    service-fee-percent: ${SERVICE_FEE_PERCENT:3.0}
+    transport-fee-fixed-tzs: ${TRANSPORT_FEE_FIXED:1500}
+    agent-fee-base-tzs: ${AGENT_FEE_BASE:2000}
+
+  # Selcom (payments) - placeholders
+  selcom:
+    api-url: https://api.selcommobile.com
+    vendor-secret: ${SELCOM_VENDOR_SECRET:}
+    api-key: ${SELCOM_API_KEY:}
+
+  # Admin API (Phase 4)
+  admin:
+    api-key: ${ADMIN_API_KEY:}
+
+  # B2B API (Phase 5)
+  b2b:
+    api-key: ${B2B_API_KEY:}
+
+  # SMS/OTP (Phase 6) - stub when disabled; set provider (e.g. africastalking, twilio) for real SMS
+  sms:
+    enabled: ${SMS_ENABLED:false}
+    provider: ${SMS_PROVIDER:}
+
+  # Bolt (delivery partner) - PROJECT_BOLT.md §7
+  bolt:
+    api-url: ${BOLT_API_URL:https://api.bolt.com}
+    api-key: ${BOLT_API_KEY:}
+    default-pickup-lat: ${BOLT_PICKUP_LAT:-6.792354}
+    default-pickup-lng: ${BOLT_PICKUP_LNG:39.208328}
+    webhook-secret: ${BOLT_WEBHOOK_SECRET:}
+
+# Actuator (Phase 5 observability): health, metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+# Log files per service/feature (logback-spring.xml): logs/agent.log, bolt.log, selcom.log, settlement.log, cash-request.log, notification.log, auth.log, remotesend.log, qr.log, b2b.log
+logging:
+  file:
+    path: ${LOG_PATH:logs}
+  level:
+    root: INFO
+    com.quickcash: DEBUG
+    org.hibernate.SQL: DEBUG

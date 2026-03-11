@@ -1,0 +1,29 @@
+# Test profile: H2, no Selcom/Firebase; let JPA create schema (Flyway disabled)
+spring:
+  datasource:
+    url: jdbc:h2:mem:quickcash_test;DB_CLOSE_DELAY=-1
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+app:
+  selcom:
+    api-key: ""
+    vendor-secret: ""
+  bolt:
+    api-key: ""
+  admin:
+    api-key: "test-admin-api-key"
+  b2b:
+    api-key: "test-b2b-api-key"
+  firebase:
+    enabled: false
+  jwt:
+    secret: QuickCashTestSecretKeyForSigningTokensMinimum32Chars
+
+logging:
+  level:
+    root: WARN
+    com.quickcash: INFO
