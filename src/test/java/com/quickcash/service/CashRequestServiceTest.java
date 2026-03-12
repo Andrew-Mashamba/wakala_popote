@@ -58,10 +58,11 @@ class CashRequestServiceTest {
     CashRequestService cashRequestService;
 
     @Test
-    void createRequestV1_without_payment_method_saves_pending_verification() {
+    void createRequestV1_without_payment_method_auto_verifies_to_searching_agent() {
         UUID userId = UUID.randomUUID();
         User user = new User();
         user.setId(userId);
+        user.setUid("uid-" + userId);
         CashRequestCreateV1 dto = new CashRequestCreateV1();
         dto.setAmount(new BigDecimal("100000"));
         dto.setLatitude(-6.78);
@@ -81,18 +82,20 @@ class CashRequestServiceTest {
         when(feeCalculationService.calculate(dto.getAmount())).thenReturn(fees);
         when(cashRequestRepository.save(any(CashRequest.class))).thenAnswer(i -> {
             CashRequest r = i.getArgument(0);
-            r.setId(UUID.randomUUID());
+            if (r.getId() == null) r.setId(UUID.randomUUID());
             r.setCreatedAt(Instant.now());
             r.setUpdatedAt(Instant.now());
             return r;
         });
+        when(agentRepository.findByIsAvailableTrue()).thenReturn(List.of());
 
         CashRequest result = cashRequestService.createRequestV1(userId, dto);
 
-        assertThat(result.getStatus()).isEqualTo(CashRequest.CashRequestStatus.PENDING_VERIFICATION);
+        assertThat(result.getStatus()).isEqualTo(CashRequest.CashRequestStatus.SEARCHING_AGENT);
+        assertThat(result.getVerifiedAt()).isNotNull();
         assertThat(result.getPrincipalAmount()).isEqualByComparingTo(new BigDecimal("100000"));
         assertThat(result.getTotalClientCharge()).isEqualByComparingTo(new BigDecimal("104500"));
-        verify(cashRequestRepository, atLeast(1)).save(any(CashRequest.class));
+        verify(cashRequestRepository, atLeast(2)).save(any(CashRequest.class));
     }
 
     @Test

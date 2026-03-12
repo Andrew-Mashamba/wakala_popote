@@ -131,8 +131,22 @@ public class CashRequestService {
                 } else {
                     log.warn("Selcom verify failed for requestId={}: {}", request.getId(), verifyResult.getError());
                 }
+            } else {
+                // Non-bank payment methods (MOBILE_WALLET, CARD): auto-verify and move to SEARCHING_AGENT
+                log.info("Non-bank payment method ({}), auto-verifying request id={}", pm.getMethodType(), request.getId());
+                request.setVerifiedAt(Instant.now());
+                request.setStatus(CashRequest.CashRequestStatus.SEARCHING_AGENT);
+                request = cashRequestRepository.save(request);
+                dispatchAfterPayment(request);
             }
             request = cashRequestRepository.save(request);
+        } else {
+            // No payment method specified: auto-verify (cash on delivery)
+            log.info("No payment method specified, auto-verifying request id={}", request.getId());
+            request.setVerifiedAt(Instant.now());
+            request.setStatus(CashRequest.CashRequestStatus.SEARCHING_AGENT);
+            request = cashRequestRepository.save(request);
+            dispatchAfterPayment(request);
         }
         return request;
     }
@@ -203,8 +217,22 @@ public class CashRequestService {
                         }
                     }
                 }
+            } else {
+                // Non-bank payment methods (MOBILE_WALLET, CARD): auto-verify
+                remotesendLog.info("Non-bank payment method ({}), auto-verifying remote send id={}", pm.getMethodType(), request.getId());
+                request.setVerifiedAt(Instant.now());
+                request.setStatus(CashRequest.CashRequestStatus.SEARCHING_AGENT);
+                request = cashRequestRepository.save(request);
+                dispatchAfterPayment(request);
             }
             request = cashRequestRepository.save(request);
+        } else {
+            // No payment method: auto-verify
+            remotesendLog.info("No payment method, auto-verifying remote send id={}", request.getId());
+            request.setVerifiedAt(Instant.now());
+            request.setStatus(CashRequest.CashRequestStatus.SEARCHING_AGENT);
+            request = cashRequestRepository.save(request);
+            dispatchAfterPayment(request);
         }
         return request;
     }
