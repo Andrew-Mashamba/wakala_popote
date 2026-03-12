@@ -72,6 +72,7 @@ public class PaymentMethod {
 
     public enum MethodType {
         MOBILE_MONEY,
+        MOBILE_WALLET,
         BANK_ACCOUNT,
         CARD
     }

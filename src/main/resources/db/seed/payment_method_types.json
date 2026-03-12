@@ -1,0 +1,49 @@
+[
+  {
+    "id": "MOBILE_WALLET",
+    "label": "Mobile Wallet",
+    "displayOrder": 1,
+    "subTypes": [
+      {"id": "M_PESA", "label": "M-Pesa", "displayOrder": 1},
+      {"id": "TIGO_PESA", "label": "Tigo Pesa", "displayOrder": 2},
+      {"id": "AIRTEL_MONEY", "label": "Airtel Money", "displayOrder": 3},
+      {"id": "HALO_PESA", "label": "Halopesa", "displayOrder": 4},
+      {"id": "TPESA", "label": "T-Pesa", "displayOrder": 5},
+      {"id": "ZANTEL_PESA", "label": "Zantel Pesa", "displayOrder": 6},
+      {"id": "TTCL_PESA", "label": "TTCL Pesa", "displayOrder": 7}
+    ]
+  },
+  {
+    "id": "BANK_ACCOUNT",
+    "label": "Bank Account",
+    "displayOrder": 2,
+    "subTypes": [
+      {"id": "CRDB", "label": "CRDB Bank", "displayOrder": 1},
+      {"id": "NMB", "label": "NMB Bank", "displayOrder": 2},
+      {"id": "NBC", "label": "NBC Bank", "displayOrder": 3},
+      {"id": "TPB", "label": "TPB Bank", "displayOrder": 4},
+      {"id": "STANBIC", "label": "Stanbic Bank", "displayOrder": 5},
+      {"id": "AZANIA", "label": "Azania Bank", "displayOrder": 6},
+      {"id": "DCB", "label": "DCB Commercial Bank", "displayOrder": 7},
+      {"id": "EXIM", "label": "Exim Bank", "displayOrder": 8},
+      {"id": "KCB", "label": "KCB Bank", "displayOrder": 9},
+      {"id": "ABSA", "label": "Absa Bank Tanzania", "displayOrder": 10},
+      {"id": "EQUITY", "label": "Equity Bank", "displayOrder": 11},
+      {"id": "ECOBANK", "label": "Ecobank Tanzania", "displayOrder": 12},
+      {"id": "DTB", "label": "Diamond Trust Bank", "displayOrder": 13},
+      {"id": "ACCESS", "label": "Access Bank Tanzania", "displayOrder": 14},
+      {"id": "PBZ", "label": "People's Bank of Zanzibar", "displayOrder": 15}
+    ]
+  },
+  {
+    "id": "CARD",
+    "label": "Card",
+    "displayOrder": 3,
+    "subTypes": [
+      {"id": "VISA", "label": "Visa", "displayOrder": 1},
+      {"id": "MASTERCARD", "label": "Mastercard", "displayOrder": 2},
+      {"id": "AMEX", "label": "American Express", "displayOrder": 3},
+      {"id": "UNIONPAY", "label": "UnionPay", "displayOrder": 4}
+    ]
+  }
+]
