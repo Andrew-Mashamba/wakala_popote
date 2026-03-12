@@ -7,8 +7,11 @@ import com.quickcash.dto.PaymentMethodTypeResponse;
 import com.quickcash.dto.PaymentMethodTypesResponse;
 import com.quickcash.repository.PaymentMethodTypeRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,10 +21,12 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentMethodTypeService {
 
     private final PaymentMethodTypeRepository paymentMethodTypeRepository;
 
+    @Transactional(readOnly = true)
     public PaymentMethodTypesResponse getTypes() {
         List<PaymentMethodType> types = paymentMethodTypeRepository.findAllByOrderByDisplayOrderAscIdAsc();
         List<PaymentMethodTypeResponse> categories = types.stream()
@@ -33,7 +38,9 @@ public class PaymentMethodTypeService {
     }
 
     private PaymentMethodTypeResponse toResponse(PaymentMethodType type) {
-        List<PaymentMethodSubTypeResponse> subTypes = type.getSubTypes().stream()
+        List<PaymentMethodSubType> subs = type.getSubTypes();
+        List<PaymentMethodSubTypeResponse> subTypes = (subs != null ? subs : Collections.<PaymentMethodSubType>emptyList())
+                .stream()
                 .map(this::toSubTypeResponse)
                 .collect(Collectors.toList());
         return PaymentMethodTypeResponse.builder()

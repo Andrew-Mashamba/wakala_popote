@@ -10,7 +10,6 @@ import java.util.List;
 @Table(name = "payment_method_types")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class PaymentMethodType {
@@ -30,4 +29,10 @@ public class PaymentMethodType {
     @OrderBy("displayOrder ASC, id ASC")
     @Builder.Default
     private List<PaymentMethodSubType> subTypes = new ArrayList<>();
+
+    /** JPA requires a no-arg constructor. Explicit so subTypes is never null. */
+    public PaymentMethodType() {
+        this.subTypes = new ArrayList<>();
+        this.displayOrder = 0;
+    }
 }

@@ -21,7 +21,7 @@ public class PaymentMethodService {
 
     @Transactional
     public PaymentMethod create(UUID userId, PaymentMethodRequest request) {
-        var user = userService.getById(userId.toString());
+        var user = userService.getOrCreateById(userId);
         if (Boolean.TRUE.equals(request.getIsDefault())) {
             clearDefaultForUser(user);
         }

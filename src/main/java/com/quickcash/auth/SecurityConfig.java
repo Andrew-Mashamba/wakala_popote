@@ -1,5 +1,6 @@
 package com.quickcash.auth;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -42,6 +43,13 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/v1/b2b/**").hasRole("B2B")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setContentType("application/json");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("{\"status\":401,\"message\":\"Unauthorized\"}");
+                        })
                 )
                 .headers(h -> h.frameOptions(f -> f.sameOrigin()))
                 .addFilterBefore(b2bApiKeyFilter, UsernamePasswordAuthenticationFilter.class)
