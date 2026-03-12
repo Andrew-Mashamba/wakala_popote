@@ -6,6 +6,9 @@ spring:
     password: ${DB_PASSWORD:}
     driver-class-name: org.postgresql.Driver
 
+  flyway:
+    enabled: false
+
   jpa:
     hibernate:
       ddl-auto: update
